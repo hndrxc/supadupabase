@@ -82,7 +82,7 @@ export default async function Home() {
       <main className="mx-auto w-full max-w-5xl px-6 pb-16">
         <section className="flex flex-col gap-10 rounded-3xl border border-purple-900/50 bg-[#0f0d16]/80 p-10 shadow-2xl shadow-purple-900/40 backdrop-blur sm:p-14">
           <div className="flex flex-col gap-6 sm:max-w-3xl" id="about">
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">Building together</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">Security Society at LSU</p>
             <h1 className="text-4xl font-semibold leading-tight text-white sm:text-5xl">
               Hello Hacker!
             </h1>
