@@ -1,11 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "../../../utils/supabase/client";
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordFallback />}>
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+
+function ResetPasswordFallback() {
+  return (
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-black via-[#0d0a14] to-black text-slate-100">
+      <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-purple-700/40 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-[-80px] h-72 w-72 rounded-full bg-amber-500/30 blur-3xl" />
+
+      <div className="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-6 py-12">
+        <div className="w-full max-w-xl rounded-3xl border border-purple-900/50 bg-[#0f0d16]/90 p-10 text-center shadow-2xl shadow-purple-900/40 backdrop-blur">
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-lg font-semibold uppercase tracking-tight text-amber-300 ring-1 ring-purple-700/60 shadow-lg shadow-purple-900/40">
+              SSL
+            </div>
+            <h1 className="text-2xl font-semibold text-white">Loading reset page…</h1>
+            <p className="text-sm text-slate-300">Hold on while we prepare your reset link.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ResetPasswordContent() {
   const supabase = useMemo(() => createClient(), []);
   const searchParams = useSearchParams();
   const searchParamsString = useMemo(() => searchParams?.toString() ?? "", [searchParams]);
