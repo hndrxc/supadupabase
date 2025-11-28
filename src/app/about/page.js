@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { useStorageImage } from "@/hooks/useStorageImage";
+import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 
 const OFFICER_BUCKET = process.env.NEXT_PUBLIC_OFFICER_BUCKET || "officers";
 
@@ -143,6 +144,10 @@ function OfficerCard({ officer }) {
 }
 
 export default function AboutPage() {
+  const { user } = useSupabaseUser();
+  const accountHref = user ? "/account" : "/login";
+  const accountLabel = user ? "Account" : "Login";
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-black via-[#0d0a14] to-black text-slate-100">
       <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-purple-700/40 blur-3xl" />
@@ -157,7 +162,7 @@ export default function AboutPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">
               Security Society at LSU
             </p>
-            <p className="text-base font-semibold text-slate-100">LSU's Only Cybersecurity Club</p>
+            <p className="text-base font-semibold text-slate-100">LSU&apos;s Only Cybersecurity Club</p>
           </div>
         </div>
 
@@ -175,10 +180,10 @@ export default function AboutPage() {
             Officers
           </a>
           <Link
-            href="/login"
+            href={accountHref}
             className="rounded-full border border-amber-400/70 px-4 py-2 text-amber-200 transition-colors hover:border-transparent hover:bg-amber-400 hover:text-black"
           >
-            Login
+            {accountLabel}
           </Link>
         </nav>
       </header>

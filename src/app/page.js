@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { createClient } from "../../utils/supabase/server";
 
 const highlights = [
   {
@@ -28,7 +29,16 @@ const stats = [
 const discordServerId = process.env.NEXT_PUBLIC_DISCORD_SERVER_ID;
 const discordInvite = process.env.NEXT_PUBLIC_DISCORD_INVITE;
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const accountHref = user ? "/account" : "/login";
+  const accountLabel = user ? "Account" : "Login";
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-black via-[#0d0a14] to-black text-slate-100">
       <div className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-purple-700/40 blur-3xl" />
@@ -43,7 +53,7 @@ export default function Home() {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">
               Security Society at LSU
             </p>
-            <p className="text-base font-semibold text-slate-100">LSU's Only Cybersecurity Club</p>
+            <p className="text-base font-semibold text-slate-100">LSU&apos;s Only Cybersecurity Club</p>
           </div>
         </div>
 
@@ -61,10 +71,10 @@ export default function Home() {
             About
           </a>
           <Link
-            href="/login"
+            href={accountHref}
             className="rounded-full border border-amber-400/70 px-4 py-2 text-amber-200 transition-colors hover:border-transparent hover:bg-amber-400 hover:text-black"
           >
-            Login
+            {accountLabel}
           </Link>
         </nav>
       </header>
@@ -77,7 +87,7 @@ export default function Home() {
               Hello Hacker!
             </h1>
             <p className="text-lg leading-8 text-slate-300">
-              We equip students with the technical skills needed in today's cybersecurity landscape and provide job
+              We equip students with the technical skills needed in today&apos;s cybersecurity landscape and provide job
               opportunities by connecting them with industry professionals. Join us from 6:00-7:30 in PFT 1240 on
               Tuesdays, in PFT 1212 on Fridays, or email us at securitysocietylsu@protonmail.com!
             </p>
@@ -89,10 +99,10 @@ export default function Home() {
                 Explore programs
               </a>
               <Link
-                href="/login"
+                href={accountHref}
                 className="rounded-full border border-purple-500/60 px-6 py-3 text-sm font-semibold text-purple-100 transition-colors hover:border-purple-400 hover:bg-purple-600 hover:text-white"
               >
-                Login to your account
+                {user ? "Go to your account" : "Login to your account"}
               </Link>
             </div>
           </div>
