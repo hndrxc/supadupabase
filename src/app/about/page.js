@@ -51,7 +51,7 @@ const officers = [
   {
     name: "Ronald Gibson",
     role: "Outreach Chair",
-    team: "Allumni",
+    team: "just a guy",
     photoPath: "ronald.png",
     description:
       "Secret leader of LSU's secret Cybersecurity cult and facilitator of communications between SSL and outside parties. Works heavily with other officers to ensure all the communications being done are benefiting some part of the club. Outside parties can include companies for talks/sponsorships, potential speakers, and more.",
@@ -91,7 +91,7 @@ const officers = [
   },
   {
     name: "Chloe Phan",
-    role: "Graphics Designer/Social Meadia Lead",
+    role: "Graphics Designer/Social Media Lead",
     team: "Officer",
     photoPath: "chloe.jpg",
     description:
