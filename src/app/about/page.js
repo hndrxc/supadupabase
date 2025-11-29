@@ -7,7 +7,15 @@ import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 
 const OFFICER_BUCKET = process.env.NEXT_PUBLIC_OFFICER_BUCKET || "officers";
 
-const officers = [
+const officers = [ 
+  // {
+  //   name: "First Last",
+  //   role: "role",
+  //   team: "class",
+  //   photoPath: "cam.png",
+  //   description:
+  //     "Very long and drawn out description",
+  // },
   {
     name: "Peyton 'Tai' Tran",
     role: "President",
@@ -40,7 +48,6 @@ const officers = [
     description:
       "Responsible for communication between LSU, board, and members. This includes maintenance of newsletter and calendar.",
   },
-  
   {
     name: "Ronald Gibson",
     role: "Outreach Chair",
@@ -49,14 +56,7 @@ const officers = [
     description:
       "Secret leader of LSU's secret Cybersecurity cult and facilitator of communications between SSL and outside parties. Works heavily with other officers to ensure all the communications being done are benefiting some part of the club. Outside parties can include companies for talks/sponsorships, potential speakers, and more.",
   },
-  {
-    name: "First Last",
-    role: "Out",
-    team: "Allumni",
-    photoPath: "ronald.png",
-    description:
-      "Secret leader of LSU's secret Cybersecurity cult and facilitator of communications between SSL and outside parties. Works heavily with other officers to ensure all the communications being done are benefiting some part of the club. Outside parties can include companies for talks/sponsorships, potential speakers, and more.",
-  },
+ 
   {
     name: "Benito Mendoza",
     role: "Treasurer",
