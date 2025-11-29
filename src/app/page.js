@@ -87,7 +87,7 @@ export default async function Home() {
               Hello Hacker!
             </h1>
             <p className="text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-              Welcome to the Security Society at LSU. We are are Cybersecurity club that aims to equip students with the technical skills needed in today&apos;s cybersecurity landscape,and provide job opportunities by connecting them with industry professionals.
+              Welcome to the Security Society at LSU. We are a Cybersecurity club that aims to equip students with the technical skills needed in today&apos;s cybersecurity landscape,and provide job opportunities by connecting them with industry professionals.
             </p>
             <p className="text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
               Join us from 6:00-7:30 in PFT 1240 on
