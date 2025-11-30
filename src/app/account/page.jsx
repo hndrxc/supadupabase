@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoBadge from "@/components/LogoBadge";
 import AccountForm from "./account-form";
 import { createClient } from "../../../utils/supabase/server";
 
@@ -16,13 +17,11 @@ export default async function Account() {
 
       <div className="mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-12">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black text-base font-semibold uppercase tracking-tight text-amber-300 ring-1 ring-purple-700/60 shadow-lg shadow-purple-900/40">
-              SSL
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-300">Account</p>
-              <h1 className="text-2xl font-semibold text-white">Security Society at LSU</h1>
+        <div className="flex items-center gap-3">
+          <LogoBadge size={48} className="shrink-0" priority />
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-300">Account</p>
+            <h1 className="text-2xl font-semibold text-white">Security Society at LSU</h1>
             </div>
           </div>
           <Link

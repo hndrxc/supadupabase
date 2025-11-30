@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import LogoBadge from "@/components/LogoBadge";
 import { createClient } from "../../../utils/supabase/client";
 
 export default function ResetPasswordPage() {
@@ -22,9 +23,7 @@ function ResetPasswordFallback() {
       <div className="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-6 py-12">
         <div className="w-full max-w-xl rounded-3xl border border-purple-900/50 bg-[#0f0d16]/90 p-10 text-center shadow-2xl shadow-purple-900/40 backdrop-blur">
           <div className="flex flex-col items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-lg font-semibold uppercase tracking-tight text-amber-300 ring-1 ring-purple-700/60 shadow-lg shadow-purple-900/40">
-              SSL
-            </div>
+            <LogoBadge size={48} className="shrink-0" priority />
             <h1 className="text-2xl font-semibold text-white">Loading reset page…</h1>
             <p className="text-sm text-slate-300">Hold on while we prepare your reset link.</p>
           </div>
@@ -160,9 +159,7 @@ function ResetPasswordContent() {
       <div className="mx-auto flex min-h-screen max-w-4xl items-center justify-center px-6 py-12">
         <div className="w-full max-w-xl rounded-3xl border border-purple-900/50 bg-[#0f0d16]/90 p-10 shadow-2xl shadow-purple-900/40 backdrop-blur">
           <div className="flex flex-col items-center gap-3 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-lg font-semibold uppercase tracking-tight text-amber-300 ring-1 ring-purple-700/60 shadow-lg shadow-purple-900/40">
-              SSL
-            </div>
+            <LogoBadge size={48} className="shrink-0" priority />
             <h1 className="text-2xl font-semibold text-white">Reset your password</h1>
             <p className="text-sm text-slate-300">Set a new password to get back into your account.</p>
           </div>

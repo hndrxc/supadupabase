@@ -1,4 +1,5 @@
 import Link from "next/link";
+import LogoBadge from "@/components/LogoBadge";
 import { createClient } from "../../utils/supabase/server";
 
 const highlights = [
@@ -46,9 +47,7 @@ export default async function Home() {
 
       <header className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-8">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black ring-1 ring-purple-700/60 text-base font-semibold uppercase tracking-tight text-amber-300 shadow-lg shadow-purple-900/40 sm:h-12 sm:w-12 sm:text-lg">
-            SSL
-          </div>
+          <LogoBadge size={48} className="shrink-0" priority />
           <div className="text-center sm:text-left">
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">
               Security Society at LSU
@@ -64,12 +63,18 @@ export default async function Home() {
           >
             Programs
           </a>
-          <a
+          <Link
+            className="rounded-full px-4 py-2 transition-colors hover:bg-purple-700/40 hover:text-amber-200"
+            href="/events"
+          >
+            Events
+          </Link>
+          <Link
             className="rounded-full px-4 py-2 transition-colors hover:bg-purple-700/40 hover:text-amber-200"
             href="/about"
           >
             About
-          </a>
+          </Link>
           <Link
             href={accountHref}
             className="rounded-full border border-amber-400/70 px-4 py-2 text-amber-200 transition-colors hover:border-transparent hover:bg-amber-400 hover:text-black"

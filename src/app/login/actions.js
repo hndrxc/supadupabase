@@ -5,38 +5,66 @@ import { redirect } from 'next/navigation'
 
 import { createClient } from '../../../utils/supabase/server'
 
-export async function login(formData) {
-  const supabase = await createClient()
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const MIN_PASSWORD_LENGTH = 6
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email'),
-    password: formData.get('password'),
+function invalidCredentialsMessage(intent) {
+  if (intent === 'signup') {
+    return 'Could not create that account. Check your email and password.'
   }
-
-  const { error } = await supabase.auth.signInWithPassword(data)
-
-  if (error) {
-    redirect('/error')
-  }
-
-  revalidatePath('/', 'layout')
-  redirect('/account')
+  return 'Wrong email or password. Try again.'
 }
 
-export async function signup(formData) {
-  const supabase = await createClient()
+function genericErrorMessage(intent) {
+  if (intent === 'signup') {
+    return 'Unable to create an account right now. Please try again.'
+  }
+  return 'Unable to sign you in right now. Please try again.'
+}
 
-  const data = {
-    email: formData.get('email'),
-    password: formData.get('password'),
+export async function authenticate(_prevState, formData) {
+  const email = String(formData.get('email') || '').trim()
+  const password = String(formData.get('password') || '')
+  const intent = formData.get('intent') === 'signup' ? 'signup' : 'login'
+
+  if (!email || !password) {
+    return { type: 'error', message: 'Email and password are required.' }
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  if (!emailPattern.test(email)) {
+    return { type: 'error', message: 'Enter a valid email address.' }
+  }
 
-  if (error) {
-    redirect('/error')
+  if (intent === 'signup' && password.length < MIN_PASSWORD_LENGTH) {
+    return { type: 'error', message: 'Password must be at least 6 characters long.' }
+  }
+
+  const supabase = await createClient()
+
+  if (intent === 'signup') {
+    const { error } = await supabase.auth.signUp({ email, password })
+
+    if (error) {
+      const loweredMessage = error.message?.toLowerCase() || ''
+
+      if (loweredMessage.includes('registered') || error.status === 400) {
+        return { type: 'error', message: invalidCredentialsMessage(intent) }
+      }
+
+      return { type: 'error', message: genericErrorMessage(intent) }
+    }
+  } else {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error) {
+      const loweredMessage = error.message?.toLowerCase() || ''
+
+      if (error.status === 400 || loweredMessage.includes('invalid')) {
+        return { type: 'error', message: invalidCredentialsMessage(intent) }
+      }
+
+      return { type: 'error', message: genericErrorMessage(intent) }
+    }
   }
 
   revalidatePath('/', 'layout')
