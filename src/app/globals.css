@@ -7,6 +7,15 @@
   --muted: #9ca3af;
   --accent-amber: #fbbf24;
   --accent-purple: #7c3aed;
+
+  /* Cyber/Hacker aesthetic additions */
+  --cyber-green: #39ff14;
+  --cyber-red: #ff0040;
+  --cyber-blue: #00d4ff;
+  --grid-line: rgba(124, 58, 237, 0.08);
+  --scanline: rgba(255, 255, 255, 0.03);
+  --glow-amber: 0 0 20px rgba(251, 191, 36, 0.4);
+  --glow-purple: 0 0 20px rgba(124, 58, 237, 0.5);
 }
 
 @theme inline {
@@ -41,7 +50,6 @@ a:hover {
 }
 
 p {
-  color: var(--muted);
   line-height: 1.7;
 }
 
@@ -56,4 +64,209 @@ h4 {
 ::selection {
   background: rgba(251, 191, 36, 0.25);
   color: #fff;
+}
+
+/* ========================================
+   KEYFRAME ANIMATIONS - Hacker Aesthetic
+   ======================================== */
+
+/* Terminal cursor blink */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Glitch shake effect */
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+/* RGB chromatic aberration */
+@keyframes rgb-shift {
+  0% { text-shadow: -1px 0 var(--cyber-red), 1px 0 var(--cyber-blue); }
+  25% { text-shadow: -2px 0 var(--cyber-red), 2px 0 var(--cyber-blue); }
+  50% { text-shadow: -1px 0 var(--cyber-red), 1px 0 var(--cyber-blue); }
+  75% { text-shadow: 1px 0 var(--cyber-red), -1px 0 var(--cyber-blue); }
+  100% { text-shadow: -1px 0 var(--cyber-red), 1px 0 var(--cyber-blue); }
+}
+
+/* Pulsing glow for CTAs */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--accent-amber), 0 0 10px var(--accent-amber), 0 10px 20px rgba(251, 191, 36, 0.3); }
+  50% { box-shadow: 0 0 15px var(--accent-amber), 0 0 30px var(--accent-amber), 0 10px 30px rgba(251, 191, 36, 0.5); }
+}
+
+/* Slide up entrance */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animated gradient border */
+@keyframes border-trace {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* Slow pulse for background elements */
+@keyframes slow-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+/* Scanline sweep */
+@keyframes scanline-sweep {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* ========================================
+   UTILITY CLASSES - Hacker Aesthetic
+   ======================================== */
+
+/* Glitch shake on hover */
+.glitch-hover {
+  transition: all 0.2s ease;
+}
+.glitch-hover:hover {
+  animation: glitch 0.3s ease-in-out infinite;
+}
+
+/* RGB chromatic aberration on hover */
+.rgb-hover {
+  transition: text-shadow 0.2s ease;
+}
+.rgb-hover:hover {
+  animation: rgb-shift 0.4s ease-in-out infinite;
+}
+
+/* Terminal blinking cursor */
+.terminal-cursor::after {
+  content: '_';
+  animation: blink 1s step-end infinite;
+  color: var(--accent-amber);
+  margin-left: 2px;
+}
+
+/* Cyber grid background pattern */
+.cyber-grid {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* CRT scanline overlay */
+.scanline-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    var(--scanline) 2px,
+    var(--scanline) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Angular corner cut - bottom right */
+.clip-cyber {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+}
+
+/* Angular corner cut - top left */
+.clip-cyber-reverse {
+  clip-path: polygon(16px 0, 100% 0, 100% 100%, 0 100%, 0 16px);
+}
+
+/* Card hover with lift and glow */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+.hover-glow:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glow-purple);
+}
+
+/* Monospace terminal font */
+.font-terminal {
+  font-family: var(--font-geist-mono), 'Courier New', monospace;
+}
+
+/* Neon text glows */
+.text-glow-amber {
+  text-shadow: 0 0 10px var(--accent-amber), 0 0 20px var(--accent-amber), 0 0 30px var(--accent-amber);
+}
+
+.text-glow-purple {
+  text-shadow: 0 0 10px var(--accent-purple), 0 0 20px var(--accent-purple);
+}
+
+/* Entrance animation */
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Animated border gradient */
+.border-animate {
+  background: linear-gradient(90deg, var(--accent-purple), var(--accent-amber), var(--accent-purple));
+  background-size: 200% 100%;
+  animation: border-trace 3s linear infinite;
+}
+
+/* Pulse glow for buttons */
+.pulse-glow:hover {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Stagger delays for children */
+.stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.6s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.7s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.8s; }
+.stagger-children > *:nth-child(9) { animation-delay: 0.9s; }
+.stagger-children > *:nth-child(10) { animation-delay: 1.0s; }
+
+/* Sweep animation on hover */
+.hover-sweep {
+  position: relative;
+  overflow: hidden;
+}
+.hover-sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.15), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.hover-sweep:hover::after {
+  transform: translateX(100%);
+}
+
+/* ========================================
+   ACCESSIBILITY - Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
