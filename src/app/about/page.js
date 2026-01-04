@@ -207,6 +207,12 @@ export default function AboutPage() {
           >
             Events
           </Link>
+          <Link
+            href="/ctf"
+            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
+          >
+            CTF
+          </Link>
           <a
             className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
             href="#officers"

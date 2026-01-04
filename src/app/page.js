@@ -81,6 +81,12 @@ export default async function Home() {
           </Link>
           <Link
             className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
+            href="/ctf"
+          >
+            CTF
+          </Link>
+          <Link
+            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
             href="/about"
           >
             About

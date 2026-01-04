@@ -60,6 +60,12 @@ export default async function EventsPage() {
             Events
           </Link>
           <Link
+            href="/ctf"
+            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
+          >
+            CTF
+          </Link>
+          <Link
             href="/about"
             className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
           >
