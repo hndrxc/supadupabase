@@ -1,5 +1,57 @@
+import { NextResponse } from 'next/server'
 import { updateSession } from './utils/supabase/middleware'
+
+// Simple in-memory rate limiter (resets on server restart)
+const rateLimitMap = new Map()
+const WINDOW_MS = 60 * 1000 // 1 minute
+const MAX_AUTH_REQUESTS = 10 // Auth endpoints
+const MAX_CTF_REQUESTS = 30 // Flag submissions
+
+// Cleanup old entries every 5 minutes to prevent memory leaks
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, record] of rateLimitMap.entries()) {
+    if (now - record.windowStart > WINDOW_MS) {
+      rateLimitMap.delete(key)
+    }
+  }
+}, 5 * 60 * 1000)
+
+function getRateLimitKey(ip, path) {
+  if (path.startsWith('/login') || path.startsWith('/auth')) {
+    return `auth:${ip}`
+  }
+  if (path.startsWith('/ctf')) {
+    return `ctf:${ip}`
+  }
+  return null
+}
+
+function isRateLimited(key, maxRequests) {
+  const now = Date.now()
+  const record = rateLimitMap.get(key)
+
+  if (!record || now - record.windowStart > WINDOW_MS) {
+    rateLimitMap.set(key, { windowStart: now, count: 1 })
+    return false
+  }
+
+  record.count++
+  return record.count > maxRequests
+}
+
 export async function middleware(request) {
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 'unknown'
+  const path = request.nextUrl.pathname
+  const key = getRateLimitKey(ip, path)
+
+  if (key) {
+    const maxRequests = key.startsWith('auth:') ? MAX_AUTH_REQUESTS : MAX_CTF_REQUESTS
+    if (isRateLimited(key, maxRequests)) {
+      return new NextResponse('Too Many Requests', { status: 429 })
+    }
+  }
+
   // update user's auth session
   return await updateSession(request)
 }

@@ -43,3 +43,6 @@ next-env.d.ts
 .sql
 
 /supabase
+
+# Claude Code context
+claude.md

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import CompetitionForm from "@/components/admin/CompetitionForm";
 import DeleteCompetitionButton from "@/components/admin/DeleteCompetitionButton";
+import CollaboratorManager from "@/components/admin/CollaboratorManager";
 import { createClient } from "../../../../../../utils/supabase/server";
+import { getCollaborators } from "@/app/admin/actions";
 
 export default async function EditCompetitionPage({ params }) {
   const { id } = await params;
@@ -18,6 +20,9 @@ export default async function EditCompetitionPage({ params }) {
   if (error || !competition) {
     notFound();
   }
+
+  // Fetch collaborators
+  const { collaborators, isOwner } = await getCollaborators(id);
 
   return (
     <div className="space-y-6">
@@ -55,9 +60,17 @@ export default async function EditCompetitionPage({ params }) {
       {/* Form */}
       <div className="clip-cyber border border-purple-900/50 bg-black/60 p-6">
         <CompetitionForm competition={competition} />
+
+        {/* Collaborators */}
+        <CollaboratorManager
+          competitionId={id}
+          collaborators={collaborators}
+          isOwner={isOwner}
+        />
       </div>
 
-      {/* Danger zone */}
+      {/* Danger zone - only show for owner */}
+      {isOwner && (
       <div className="clip-cyber border border-rose-900/50 bg-rose-500/5 p-6">
         <h2 className="font-terminal text-sm uppercase text-rose-400">[DANGER ZONE]</h2>
         <p className="mt-2 text-sm text-slate-400">
@@ -68,6 +81,7 @@ export default async function EditCompetitionPage({ params }) {
           <DeleteCompetitionButton id={id} title={competition.title} />
         </div>
       </div>
+      )}
     </div>
   );
 }

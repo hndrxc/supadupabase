@@ -37,8 +37,21 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Fetch user profile if logged in
+  let profile = null;
+  if (user) {
+    const { data } = await supabase
+      .from("profiles")
+      .select("is_admin, username, full_name")
+      .eq("id", user.id)
+      .single();
+    profile = data;
+  }
+
   const accountHref = user ? "/account" : "/login";
-  const accountLabel = user ? "Account" : "Login";
+  const accountLabel = user ? (profile?.username || "Account") : "Login";
+  const isAdmin = profile?.is_admin || false;
+  const displayName = profile?.full_name || profile?.username || "Hacker";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-black via-[#0d0a14] to-black text-slate-100 cyber-grid">
@@ -91,6 +104,14 @@ export default async function Home() {
           >
             About
           </Link>
+          {isAdmin && (
+            <Link
+              className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
+              href="/admin"
+            >
+              Admin
+            </Link>
+          )}
           <Link
             href={accountHref}
             className="pulse-glow rounded-full border border-amber-400/70 px-4 py-2 text-amber-200 transition-all hover:border-transparent hover:bg-amber-400 hover:text-black"
@@ -117,7 +138,7 @@ export default async function Home() {
 
             <p className="font-terminal text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">[SYSTEM] Security Society at LSU</p>
             <h1 className="rgb-hover text-3xl font-semibold leading-tight text-white sm:text-5xl">
-              Hello Hacker!<span className="terminal-cursor"></span>
+              Hello {displayName}!<span className="terminal-cursor"></span>
             </h1>
             <p className="text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
               Welcome to the Security Society at LSU. We are a Cybersecurity club that aims to equip students with the technical skills needed in today&apos;s cybersecurity landscape, and provide job opportunities by connecting them with industry professionals.

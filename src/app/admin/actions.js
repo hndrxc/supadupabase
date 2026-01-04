@@ -26,6 +26,34 @@ async function requireAdmin() {
   return { supabase, user }
 }
 
+// Helper to verify competition access (owner or collaborator)
+async function verifyCompetitionAccess(supabase, competitionId, userId, requiredRole = 'editor') {
+  // Check if owner
+  const { data: competition } = await supabase
+    .from('ctf_competitions')
+    .select('id, created_by')
+    .eq('id', competitionId)
+    .single()
+
+  if (!competition) return { hasAccess: false, isOwner: false }
+  if (competition.created_by === userId) return { hasAccess: true, isOwner: true }
+
+  // Check if collaborator with sufficient role
+  const { data: collaborator } = await supabase
+    .from('ctf_competition_collaborators')
+    .select('role')
+    .eq('competition_id', competitionId)
+    .eq('user_id', userId)
+    .single()
+
+  if (!collaborator) return { hasAccess: false, isOwner: false }
+
+  const roleHierarchy = { viewer: 1, editor: 2 }
+  const hasAccess = roleHierarchy[collaborator.role] >= roleHierarchy[requiredRole]
+
+  return { hasAccess, isOwner: false, role: collaborator.role }
+}
+
 // Competition actions
 export async function createCompetition(prevState, formData) {
   try {
@@ -57,7 +85,6 @@ export async function createCompetition(prevState, formData) {
       .single()
 
     if (error) {
-      console.error('Create competition error:', error)
       return { success: false, message: 'Failed to create competition' }
     }
 
@@ -72,7 +99,7 @@ export async function createCompetition(prevState, formData) {
 
 export async function updateCompetition(prevState, formData) {
   try {
-    const { supabase } = await requireAdmin()
+    const { supabase, user } = await requireAdmin()
 
     const id = formData.get('id')?.toString()
     const title = formData.get('title')?.toString().trim()
@@ -84,6 +111,12 @@ export async function updateCompetition(prevState, formData) {
 
     if (!id || !title || !startsAt || !endsAt) {
       return { success: false, message: 'ID, title, start date, and end date are required' }
+    }
+
+    // Verify access before update (owner or editor)
+    const { hasAccess } = await verifyCompetitionAccess(supabase, id, user.id, 'editor')
+    if (!hasAccess) {
+      return { success: false, message: 'Not authorized to modify this competition' }
     }
 
     const { error } = await supabase
@@ -100,7 +133,6 @@ export async function updateCompetition(prevState, formData) {
       .eq('id', id)
 
     if (error) {
-      console.error('Update competition error:', error)
       return { success: false, message: 'Failed to update competition' }
     }
 
@@ -115,7 +147,13 @@ export async function updateCompetition(prevState, formData) {
 
 export async function deleteCompetition(id) {
   try {
-    const { supabase } = await requireAdmin()
+    const { supabase, user } = await requireAdmin()
+
+    // Verify ownership before delete (only owner can delete)
+    const { isOwner } = await verifyCompetitionAccess(supabase, id, user.id)
+    if (!isOwner) {
+      return { success: false, message: 'Not authorized to delete this competition' }
+    }
 
     const { error } = await supabase
       .from('ctf_competitions')
@@ -123,7 +161,6 @@ export async function deleteCompetition(id) {
       .eq('id', id)
 
     if (error) {
-      console.error('Delete competition error:', error)
       return { success: false, message: 'Failed to delete competition' }
     }
 
@@ -139,7 +176,7 @@ export async function deleteCompetition(id) {
 // Challenge actions
 export async function createChallenge(prevState, formData) {
   try {
-    const { supabase } = await requireAdmin()
+    const { supabase, user } = await requireAdmin()
 
     const competitionId = formData.get('competition_id')?.toString()
     const title = formData.get('title')?.toString().trim()
@@ -164,6 +201,12 @@ export async function createChallenge(prevState, formData) {
 
     if (!competitionId || !title || !description || !category || !difficulty || !flag) {
       return { success: false, message: 'Required fields: competition, title, description, category, difficulty, flag' }
+    }
+
+    // Verify access before creating challenge (owner or editor)
+    const { hasAccess } = await verifyCompetitionAccess(supabase, competitionId, user.id, 'editor')
+    if (!hasAccess) {
+      return { success: false, message: 'Not authorized to add challenges to this competition' }
     }
 
     // Hash the flag using database function
@@ -204,7 +247,6 @@ export async function createChallenge(prevState, formData) {
       .single()
 
     if (error) {
-      console.error('Create challenge error:', error)
       return { success: false, message: 'Failed to create challenge' }
     }
 
@@ -219,7 +261,7 @@ export async function createChallenge(prevState, formData) {
 
 export async function updateChallenge(prevState, formData) {
   try {
-    const { supabase } = await requireAdmin()
+    const { supabase, user } = await requireAdmin()
 
     const id = formData.get('id')?.toString()
     const competitionId = formData.get('competition_id')?.toString()
@@ -245,6 +287,14 @@ export async function updateChallenge(prevState, formData) {
 
     if (!id || !title || !description || !category || !difficulty) {
       return { success: false, message: 'Required fields: id, title, description, category, difficulty' }
+    }
+
+    // Verify access before updating challenge (owner or editor)
+    if (competitionId) {
+      const { hasAccess } = await verifyCompetitionAccess(supabase, competitionId, user.id, 'editor')
+      if (!hasAccess) {
+        return { success: false, message: 'Not authorized to modify challenges in this competition' }
+      }
     }
 
     const updateData = {
@@ -287,7 +337,6 @@ export async function updateChallenge(prevState, formData) {
       .eq('id', id)
 
     if (error) {
-      console.error('Update challenge error:', error)
       return { success: false, message: 'Failed to update challenge' }
     }
 
@@ -302,7 +351,13 @@ export async function updateChallenge(prevState, formData) {
 
 export async function deleteChallenge(id, competitionId) {
   try {
-    const { supabase } = await requireAdmin()
+    const { supabase, user } = await requireAdmin()
+
+    // Verify access before deleting challenge (owner or editor)
+    const { hasAccess } = await verifyCompetitionAccess(supabase, competitionId, user.id, 'editor')
+    if (!hasAccess) {
+      return { success: false, message: 'Not authorized to delete challenges from this competition' }
+    }
 
     const { error } = await supabase
       .from('ctf_challenges')
@@ -310,7 +365,6 @@ export async function deleteChallenge(id, competitionId) {
       .eq('id', id)
 
     if (error) {
-      console.error('Delete challenge error:', error)
       return { success: false, message: 'Failed to delete challenge' }
     }
 
@@ -320,5 +374,120 @@ export async function deleteChallenge(id, competitionId) {
     return { success: true, message: 'Challenge deleted' }
   } catch (error) {
     return { success: false, message: error.message }
+  }
+}
+
+// Collaborator actions
+export async function addCollaborator(prevState, formData) {
+  try {
+    const { supabase, user } = await requireAdmin()
+
+    const competitionId = formData.get('competition_id')?.toString()
+    const collaboratorEmail = formData.get('email')?.toString().trim()
+    const role = formData.get('role')?.toString() || 'editor'
+
+    if (!competitionId || !collaboratorEmail) {
+      return { success: false, message: 'Competition ID and email are required' }
+    }
+
+    if (!['editor', 'viewer'].includes(role)) {
+      return { success: false, message: 'Invalid role' }
+    }
+
+    // Only owner can add collaborators
+    const { isOwner } = await verifyCompetitionAccess(supabase, competitionId, user.id)
+    if (!isOwner) {
+      return { success: false, message: 'Only the competition owner can manage collaborators' }
+    }
+
+    // Find user by email
+    const { data: targetUser } = await supabase
+      .from('profiles')
+      .select('id, is_admin')
+      .eq('email', collaboratorEmail)
+      .single()
+
+    if (!targetUser) {
+      return { success: false, message: 'User not found' }
+    }
+
+    if (!targetUser.is_admin) {
+      return { success: false, message: 'User must be an admin to be added as collaborator' }
+    }
+
+    // Add collaborator
+    const { error } = await supabase
+      .from('ctf_competition_collaborators')
+      .insert({
+        competition_id: competitionId,
+        user_id: targetUser.id,
+        role,
+        invited_by: user.id
+      })
+
+    if (error) {
+      if (error.code === '23505') {
+        return { success: false, message: 'User is already a collaborator' }
+      }
+      return { success: false, message: 'Failed to add collaborator' }
+    }
+
+    revalidatePath(`/admin/ctf/competitions/${competitionId}`)
+    return { success: true, message: 'Collaborator added' }
+  } catch (error) {
+    return { success: false, message: error.message }
+  }
+}
+
+export async function removeCollaborator(competitionId, collaboratorUserId) {
+  try {
+    const { supabase, user } = await requireAdmin()
+
+    // Only owner can remove collaborators
+    const { isOwner } = await verifyCompetitionAccess(supabase, competitionId, user.id)
+    if (!isOwner) {
+      return { success: false, message: 'Only the competition owner can manage collaborators' }
+    }
+
+    const { error } = await supabase
+      .from('ctf_competition_collaborators')
+      .delete()
+      .eq('competition_id', competitionId)
+      .eq('user_id', collaboratorUserId)
+
+    if (error) {
+      return { success: false, message: 'Failed to remove collaborator' }
+    }
+
+    revalidatePath(`/admin/ctf/competitions/${competitionId}`)
+    return { success: true, message: 'Collaborator removed' }
+  } catch (error) {
+    return { success: false, message: error.message }
+  }
+}
+
+export async function getCollaborators(competitionId) {
+  try {
+    const { supabase, user } = await requireAdmin()
+
+    const { hasAccess, isOwner } = await verifyCompetitionAccess(supabase, competitionId, user.id, 'viewer')
+    if (!hasAccess) {
+      return { success: false, collaborators: [], isOwner: false }
+    }
+
+    const { data } = await supabase
+      .from('ctf_competition_collaborators')
+      .select(`
+        id,
+        role,
+        created_at,
+        user_id,
+        profiles!ctf_competition_collaborators_user_id_fkey(id, email, full_name)
+      `)
+      .eq('competition_id', competitionId)
+
+    return { success: true, collaborators: data || [], isOwner }
+  } catch (error) {
+    return { success: false, collaborators: [], isOwner: false }
   }
 }
