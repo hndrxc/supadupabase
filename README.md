@@ -10,6 +10,28 @@ The official website for the Security Society at LSU, featuring a complete CTF c
 - **Styling:** Tailwind CSS 4
 - **Hosting:** Vercel
 
+## Dependencies
+
+### Runtime Dependencies
+- **next** (^16.0.10) - React framework with App Router
+- **react** (^19.2.3) - React library
+- **react-dom** (^19.2.3) - React DOM rendering
+- **@supabase/supabase-js** (^2.86.0) - Supabase client library
+- **@supabase/ssr** (^0.8.0) - Supabase SSR authentication
+- **@vercel/analytics** (^1.5.0) - Vercel analytics tracking
+- **react-snowfall** (^2.4.0) - Snowfall animation component
+
+### Development Dependencies
+- **tailwindcss** (^4) - Utility-first CSS framework
+- **@tailwindcss/postcss** (^4) - PostCSS support for Tailwind
+- **babel-plugin-react-compiler** (1.0.0) - React Compiler Babel plugin
+- **eslint** (^9) - JavaScript linting
+- **eslint-config-next** (^16.0.10) - Next.js ESLint configuration
+
+### System Requirements
+- **Node.js:** 18+ or higher
+- **npm:** 9+ (or use yarn/pnpm as alternatives)
+
 ## Features
 
 ### Completed
@@ -32,9 +54,9 @@ The official website for the Security Society at LSU, featuring a complete CTF c
 - [x] Rate limiting on auth and CTF endpoints
 - [x] Security headers (XSS, clickjacking protection)
 - [x] Vercel deploy with analytics
+- [x] Events page for club activities and calendar
 
 ### In Progress
-- [ ] Events page for club activities and calendar
 
 ## Getting Started
 
@@ -43,7 +65,7 @@ The official website for the Security Society at LSU, featuring a complete CTF c
    ```bash
    npm install
    ```
-3. Create `.env.local` with your Supabase credentials:
+3. Create `.env.local` from `.env.example` with your Supabase credentials:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
@@ -56,19 +78,22 @@ The official website for the Security Society at LSU, featuring a complete CTF c
 5. Open [http://localhost:3000](http://localhost:3000)
 
 ## Database Setup
+run DBsetup.sql in database to set up schema. 
 
-Run the migrations in `supabase/migrations/` against your Supabase project:
-1. `001_ctf_system.sql` - Core tables, functions, and RLS policies
-2. `002_ctf_collaborators.sql` - Multi-admin collaboration
 
 ## Project Structure
 
 ```
 src/
+├── page.jsx              # Landing page
+├── layout.jsx 
 ├── app/                  # Next.js App Router pages
 │   ├── admin/            # Admin dashboard (protected)
 │   ├── ctf/              # CTF competition pages
 │   ├── login/            # Authentication
+│   ├── error/            # Error handling
+│   ├── about/            # About Page
+│   ├── auth/             # Auth handlers
 │   └── ...
 ├── components/           # React components
 │   ├── admin/            # Admin forms
