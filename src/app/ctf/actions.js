@@ -32,7 +32,6 @@ export async function submitFlag(prevState, formData) {
   })
 
   if (error) {
-    console.error('Flag verification error:', error)
     return { success: false, message: 'An error occurred. Please try again.' }
   }
 
@@ -76,7 +75,6 @@ export async function unlockHint(prevState, formData) {
   })
 
   if (error) {
-    console.error('Hint unlock error:', error)
     return { success: false, message: 'An error occurred. Please try again.' }
   }
 

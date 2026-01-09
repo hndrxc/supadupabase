@@ -156,13 +156,14 @@ export default function EventForm({ event }) {
       {/* Visibility Toggle */}
       <div className="flex items-center gap-3">
         <input
+          id="is_visible"
           name="is_visible"
           type="checkbox"
           defaultChecked={event?.is_visible !== false}
           value="true"
           className="h-4 w-4 cursor-pointer rounded border-purple-900/60 bg-black/60 text-amber-400 focus:ring-1 focus:ring-amber-400/30"
         />
-        <label className="font-terminal text-sm uppercase text-slate-400">
+        <label htmlFor="is_visible" className="font-terminal text-sm uppercase text-slate-400">
           Make event visible to users
         </label>
       </div>

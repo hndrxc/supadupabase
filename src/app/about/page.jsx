@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
 import NavbarClient from "@/components/NavbarClient";
 import { useStorageImage } from "@/hooks/useStorageImage";
 
@@ -100,16 +99,13 @@ const officers = [
 ];
 
 function OfficerCard({ officer, index = 0 }) {
-  const initials = useMemo(
-    () =>
-      officer.name
-        .split(" ")
-        .map((part) => part[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase(),
-    [officer.name]
-  );
+  // Simple calculation - no need for useMemo since officer data is static
+  const initials = officer.name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   const { url, loading, error } = useStorageImage({
     bucket: OFFICER_BUCKET,

@@ -1,21 +1,31 @@
 import { NextResponse } from 'next/server'
 import { updateSession } from './utils/supabase/middleware'
 
-// Simple in-memory rate limiter (resets on server restart)
+// IMPORTANT: This in-memory rate limiter is only suitable for development
+// or single-instance deployments. For production with multiple instances
+// (e.g., Vercel serverless), use a distributed store like:
+// - Upstash Redis (@upstash/ratelimit)
+// - Vercel KV
+// - Redis with @vercel/edge-config
+// The Map resets on every deployment/restart and isn't shared across instances.
 const rateLimitMap = new Map()
 const WINDOW_MS = 60 * 1000 // 1 minute
 const MAX_AUTH_REQUESTS = 10 // Auth endpoints
 const MAX_CTF_REQUESTS = 30 // Flag submissions
 
-// Cleanup old entries every 5 minutes to prevent memory leaks
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, record] of rateLimitMap.entries()) {
-    if (now - record.windowStart > WINDOW_MS) {
-      rateLimitMap.delete(key)
+// Cleanup old entries periodically
+// Note: This cleanup only affects the current instance's memory
+if (typeof globalThis !== 'undefined' && !globalThis.__rateLimitCleanupInitialized) {
+  globalThis.__rateLimitCleanupInitialized = true
+  setInterval(() => {
+    const now = Date.now()
+    for (const [key, record] of rateLimitMap.entries()) {
+      if (now - record.windowStart > WINDOW_MS) {
+        rateLimitMap.delete(key)
+      }
     }
-  }
-}, 5 * 60 * 1000)
+  }, 5 * 60 * 1000)
+}
 
 function getRateLimitKey(ip, path) {
   if (path.startsWith('/login') || path.startsWith('/auth')) {

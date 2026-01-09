@@ -13,7 +13,7 @@ const highlights = [
   },
   {
     title: "Trusted network",
-    detail: "Local leaders, educators, and peers shareing their Cybersecurity Knowledge",
+    detail: "Local leaders, educators, and peers sharing their Cybersecurity Knowledge",
   },
   {
     title: "Weekly Meetings",
@@ -49,7 +49,7 @@ export default async function Home() {
   }
 
   const accountHref = user ? "/account" : "/login";
-  const displayName = profile?.username || "Hacker";
+  const displayName = profile?.username || "hacker";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-gradient-to-b from-black via-[#0d0a14] to-black text-slate-100 cyber-grid">
@@ -66,7 +66,7 @@ export default async function Home() {
 
       <Navbar user={user} profile={profile} currentPath="/" />
 
-      <main className="mx-auto w-full max-w-5xl px-4 pb-14 sm:px-6 sm:pb-16">
+      <main id="main-content" className="mx-auto w-full max-w-5xl px-4 pb-14 sm:px-6 sm:pb-16">
         <section className="relative flex flex-col gap-8 clip-cyber-reverse border-l-4 border-l-amber-400 border border-purple-900/50 bg-[#0f0d16]/80 p-7 shadow-2xl shadow-purple-900/40 backdrop-blur sm:gap-10 sm:p-12 md:p-14">
           {/* Scanline overlay */}
           <div className="scanline-overlay pointer-events-none absolute inset-0 opacity-30" />

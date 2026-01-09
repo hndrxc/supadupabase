@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import FlagSubmitForm from './FlagSubmitForm'
 import HintButton from './HintButton'
 
@@ -33,6 +33,15 @@ export default function ChallengeCard({
   const [isExpanded, setIsExpanded] = useState(false)
   const [localSolved, setLocalSolved] = useState(isSolved)
   const [localHints, setLocalHints] = useState(unlockedHints || [])
+
+  // Sync local state when props change (e.g., after page revalidation)
+  useEffect(() => {
+    setLocalSolved(isSolved)
+  }, [isSolved])
+
+  useEffect(() => {
+    setLocalHints(unlockedHints || [])
+  }, [unlockedHints])
 
   const handleSolveSuccess = (result) => {
     setLocalSolved(true)

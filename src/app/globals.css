@@ -119,6 +119,14 @@ h4 {
   50% { opacity: 0.6; transform: scale(1.05); }
 }
 
+/* Animation utility classes for blur orbs */
+.animate-slow-pulse {
+  animation: slow-pulse 8s ease-in-out infinite;
+}
+.animate-slow-pulse-delayed {
+  animation: slow-pulse 10s ease-in-out infinite 1s;
+}
+
 /* Scanline sweep */
 @keyframes scanline-sweep {
   0% { transform: translateY(-100%); }

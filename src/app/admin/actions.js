@@ -97,7 +97,6 @@ export async function createCompetition(prevState, formData) {
       .single()
 
     if (error) {
-      console.error('Create competition error:', error)
       return { success: false, message: error.message || 'Failed to create competition' }
     }
 
