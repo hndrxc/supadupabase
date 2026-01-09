@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useSupabaseUser } from '@/hooks/useSupabaseUser';
+import { useSupabaseProfile } from '@/hooks/useSupabaseProfile';
 
 // Dynamically import RonConsole to reduce initial bundle size
 const RonConsole = dynamic(() => import('./RonConsole'), {
@@ -13,10 +13,11 @@ const RonConsole = dynamic(() => import('./RonConsole'), {
 export default function RonProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
   const [heldKeys, setHeldKeys] = useState(new Set());
-  const { user } = useSupabaseUser();
+  const { user, profile } = useSupabaseProfile();
 
-  // Extract username from user data, fallback to 'hacker'
-  const username = user?.user_metadata?.username
+  // Extract username from profile data, fallback to 'hacker'
+  const username = profile?.username
+    || user?.user_metadata?.username
     || user?.user_metadata?.name
     || user?.email?.split('@')[0]
     || 'hacker';

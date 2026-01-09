@@ -1,5 +1,5 @@
 import Link from "next/link";
-import LogoBadge from "@/components/LogoBadge";
+import Navbar from "@/components/Navbar";
 import { createClient } from "../../utils/supabase/server";
 import SnowfallEffect from "@/components/SnowfallEffect";
 const highlights = [
@@ -49,8 +49,6 @@ export default async function Home() {
   }
 
   const accountHref = user ? "/account" : "/login";
-  const accountLabel = user ? (profile?.username || "Account") : "Login";
-  const isAdmin = profile?.is_admin || false;
   const displayName = profile?.username || "Hacker";
 
   return (
@@ -66,61 +64,7 @@ export default async function Home() {
       <div className="pointer-events-none absolute bottom-6 left-6 h-8 w-8 border-b-2 border-l-2 border-purple-500/30" />
       <div className="pointer-events-none absolute bottom-6 right-6 h-8 w-8 border-b-2 border-r-2 border-amber-500/30" />
 
-      <header className="relative mx-auto flex w-full max-w-5xl flex-col gap-5 px-4 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-8">
-        {/* Animated border line */}
-        <div className="absolute bottom-0 left-4 right-4 h-px border-animate sm:left-6 sm:right-6" />
-
-        <div className="flex items-center gap-3 sm:gap-4">
-          <LogoBadge size={48} className="shrink-0" priority />
-          <div className="text-center sm:text-left">
-            <p className="font-terminal text-xs font-semibold uppercase tracking-[0.2em] text-amber-300">
-              Security Society at LSU
-            </p>
-            <p className="text-base font-semibold text-slate-100">LSU&apos;s Best Cybersecurity Club</p>
-          </div>
-        </div>
-
-        <nav className="flex w-full flex-wrap items-center justify-center gap-3 text-sm font-semibold text-slate-200 sm:w-auto sm:justify-end">
-          <a
-            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
-            href="#programs"
-          >
-            Programs
-          </a>
-          <Link
-            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
-            href="/events"
-          >
-            Events
-          </Link>
-          <Link
-            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
-            href="/ctf"
-          >
-            CTF
-          </Link>
-          <Link
-            className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
-            href="/about"
-          >
-            About
-          </Link>
-          {isAdmin && (
-            <Link
-              className="glitch-hover font-terminal rounded-full px-4 py-2 text-xs uppercase tracking-wider transition-colors hover:bg-purple-700/40 hover:text-amber-200"
-              href="/admin"
-            >
-              Admin
-            </Link>
-          )}
-          <Link
-            href={accountHref}
-            className="pulse-glow rounded-full border border-amber-400/70 px-4 py-2 text-amber-200 transition-all hover:border-transparent hover:bg-amber-400 hover:text-black"
-          >
-            {accountLabel}
-          </Link>
-        </nav>
-      </header>
+      <Navbar user={user} profile={profile} currentPath="/" />
 
       <main className="mx-auto w-full max-w-5xl px-4 pb-14 sm:px-6 sm:pb-16">
         <section className="relative flex flex-col gap-8 clip-cyber-reverse border-l-4 border-l-amber-400 border border-purple-900/50 bg-[#0f0d16]/80 p-7 shadow-2xl shadow-purple-900/40 backdrop-blur sm:gap-10 sm:p-12 md:p-14">
